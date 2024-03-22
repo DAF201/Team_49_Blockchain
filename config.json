@@ -1,0 +1,18 @@
+{
+    "self": {
+        "id": "UNASSIGNED"
+    },
+    "server": {
+        "boot_server": "",
+        "known": {},
+        "online": {}
+    },
+    "network": {
+        "local_ip": "",
+        "port": "4202"
+    },
+    "chain": {
+        "gensis_hash": "",
+        "chain_length": 1
+    }
+}
