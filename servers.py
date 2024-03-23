@@ -1,6 +1,7 @@
 from socket import socket, AF_INET, SOCK_STREAM
 from gc import collect
 from threading import Thread
+from time import sleep
 
 
 class fast_sock:
@@ -8,7 +9,6 @@ class fast_sock:
     __TCP_host: str
     __TCP_port: int
     __TCP_queue: list
-    __TCP_rebind: bool
     __TCP_RECV_thread: Thread
     __TCP_peak_index: int
 
@@ -33,7 +33,7 @@ class fast_sock:
             print(e)
 
     def TCP_recv(self):
-        while not fast_sock.__TCP_rebind:
+        while True:
             try:
                 data = self.__TCP_sock.recv(1024)
                 if data != b'':
@@ -42,34 +42,31 @@ class fast_sock:
                         fast_sock.__TCP_queue.pop(0)
                     fast_sock.__TCP_queue.append(data)
             except:
-                pass
+                collect()
 
-        collect()
-        fast_sock.__TCP_rebind = True
-        # self.__TCP_recv_thread()
-
-    def TCP_peak(*index):
-        if index != None:
+    def TCP_peak(self, index=0):
+        if not index:
             try:
-                return fast_sock.__TCP_queue[index]
+                fast_sock.__TCP_peak_index += 1
+                return fast_sock.__TCP_queue[fast_sock.__TCP_peak_index-1]
             except Exception as e:
-                print(e)
+                # print(e)
                 return None
         else:
-            fast_sock.__TCP_peak_index += 1
-            return fast_sock.__TCP_queue[fast_sock.__TCP_peak_index-1]
+            try:
+                return fast_sock.__TCP_queue[0]
+            except IndexError:
+                return None
 
     def __TCP_socket_init(self, __TCP_host: str, __TCP_port: int):
         fast_sock.__TCP_sock = socket(AF_INET, SOCK_STREAM)
         fast_sock.__TCP_sock.connect((__TCP_host, __TCP_port))
         fast_sock.__TCP_host = __TCP_host
         fast_sock.__TCP_port = __TCP_port
-        fast_sock.__TCP_rebind = True
 
     def __TCP_recv_thread(self):
         fast_sock.__TCP_RECV_thread = Thread(
             target=fast_sock.TCP_recv, args=(self,))
-        fast_sock.__TCP_RECV_thread.setDaemon = True
         fast_sock.__TCP_RECV_thread.start()
 
     def UPD_send():
@@ -79,5 +76,7 @@ class fast_sock:
 fs = fast_sock("127.0.0.1", 2024)
 fs.TCP_send("test data 01".encode())
 fs.TCP_send("test data 02".encode(), "127.0.0.1", 2025)
+sleep(1)
+print(fs.TCP_peak())
 print(fs.TCP_peak())
 print(fs.TCP_peak())
