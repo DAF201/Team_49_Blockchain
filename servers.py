@@ -10,13 +10,13 @@ class fast_sock:
     __TCP_port: int
     __TCP_queue: list
     __TCP_RECV_thread: Thread
-    __TCP_peak_index: int
+    __TCP_peek_index: int
 
     def __init__(self, __TCP_host: str, __TCP_port: int) -> None:
         fast_sock.__TCP_queue = []
         self.__TCP_socket_init(__TCP_host, __TCP_port)
         self.__TCP_recv_thread()
-        fast_sock.__TCP_peak_index = 0
+        fast_sock.__TCP_peek_index = 0
 
     def TCP_send(self, data, __TCP_host="", __TCP_port=0):
         if __TCP_host != "" or __TCP_port != 0:
@@ -44,12 +44,12 @@ class fast_sock:
             except:
                 collect()
 
-    def TCP_peak(self, index=0):
+    def TCP_peek(self, index=0):
         if not index:
             try:
-                if index == fast_sock.__TCP_peak_index:
-                    fast_sock.__TCP_peak_index += 1
-                    return fast_sock.__TCP_queue[fast_sock.__TCP_peak_index-1]
+                if index == fast_sock.__TCP_peek_index:
+                    fast_sock.__TCP_peek_index += 1
+                    return fast_sock.__TCP_queue[fast_sock.__TCP_peek_index-1]
                 else:
                     return fast_sock.__TCP_queue[index]
             except Exception as e:
