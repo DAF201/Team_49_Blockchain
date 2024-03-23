@@ -47,8 +47,11 @@ class fast_sock:
     def TCP_peak(self, index=0):
         if not index:
             try:
-                fast_sock.__TCP_peak_index += 1
-                return fast_sock.__TCP_queue[fast_sock.__TCP_peak_index-1]
+                if index == fast_sock.__TCP_peak_index:
+                    fast_sock.__TCP_peak_index += 1
+                    return fast_sock.__TCP_queue[fast_sock.__TCP_peak_index-1]
+                else:
+                    return fast_sock.__TCP_queue[index]
             except Exception as e:
                 # print(e)
                 return None
@@ -71,12 +74,3 @@ class fast_sock:
 
     def UPD_send():
         pass
-
-
-fs = fast_sock("127.0.0.1", 2024)
-fs.TCP_send("test data 01".encode())
-fs.TCP_send("test data 02".encode(), "127.0.0.1", 2025)
-sleep(1)
-print(fs.TCP_peak())
-print(fs.TCP_peak())
-print(fs.TCP_peak())
